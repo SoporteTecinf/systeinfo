@@ -1,0 +1,14 @@
+const API='http://localhost:3000/api';
+let products=[],cart=JSON.parse(localStorage.getItem('novaCart')||'[]'),category='';
+const icons={Electrónica:'🎧',Automotriz:'🚗',Hogar:'🏠',Mascotas:'🐶',Ropa:'👕',Herramientas:'🔧'};
+async function loadCategories(){const r=await fetch(API+'/categories');const data=await r.json();cats.innerHTML='<button onclick="setCat(\'\')">Todos</button>'+data.map(c=>`<button onclick="setCat('${c.slug}')">${icons[c.name]||'🛍️'} ${c.name}</button>`).join('')}
+function setCat(c){category=c;loadProducts()}
+async function loadProducts(){const q=document.getElementById('q').value;const r=await fetch(`${API}/products?q=${encodeURIComponent(q)}&category=${encodeURIComponent(category)}`);products=await r.json();const s=sort.value;if(s==='low')products.sort((a,b)=>a.price-b.price);if(s==='high')products.sort((a,b)=>b.price-a.price);document.getElementById('products').innerHTML=products.map(p=>`<article class="card"><div class="pic">${icons[p.category]||'🛍️'}</div><div><small class="cat">${p.category||''}</small><h3>${esc(p.name)}</h3><p class="desc">${esc(p.description)}</p><div class="price">$${Number(p.price).toFixed(2)}</div><button class="add" onclick="add(${p.id})">Agregar al carrito</button></div></article>`).join('')}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function add(id){let x=cart.find(i=>i.id===id);if(x)x.qty++;else cart.push({id,qty:1});save();renderCart();openCart()}
+function change(id,d){let x=cart.find(i=>i.id===id);if(!x)return;x.qty+=d;if(x.qty<1)cart=cart.filter(i=>i.id!==id);save();renderCart()}
+function save(){localStorage.setItem('novaCart',JSON.stringify(cart))}
+function renderCart(){let total=0,count=0;cart.forEach(i=>{const p=products.find(p=>p.id===i.id);if(p){total+=Number(p.price)*i.qty;count+=i.qty}});document.getElementById('count').textContent=count;document.getElementById('total').textContent='$'+total.toFixed(2);document.getElementById('cart').innerHTML=cart.map(i=>{const p=products.find(p=>p.id===i.id);if(!p)return '';return `<div class="cartItem"><span style="font-size:35px">${icons[p.category]||'🛍️'}</span><div><b>${esc(p.name)}</b><div>$${Number(p.price).toFixed(2)}</div><div class="qty"><button onclick="change(${p.id},-1)">−</button>${i.qty}<button onclick="change(${p.id},1)">+</button></div></div></div>`}).join('')||'<p style="padding:25px">Tu carrito está vacío.</p>'}
+function openCart(){cartDialog.showModal();renderCart()}
+async function placeOrder(){alert('La creación de pedidos reales requiere iniciar sesión y configurar la dirección del cliente. El backend ya incluye el endpoint para crear pedidos.')}
+loadCategories();loadProducts();renderCart();

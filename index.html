@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NovaMarket</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header><a class="brand" href="#">Nova<span>Market</span></a><input id="q" placeholder="Buscar productos..." oninput="loadProducts()"><button onclick="openCart()">🛒 <b id="count">0</b></button></header>
+<nav id="cats"></nav>
+<main>
+<section class="hero"><div><small>TODO EN UN SOLO LUGAR</small><h1>Compra fácil.<br>Encuentra de todo.</h1><p>Electrónica, automotriz, hogar, mascotas y más.</p></div><div class="bag">🛍️</div></section>
+<div class="toolbar"><h2>Productos</h2><select id="sort" onchange="loadProducts()"><option value="">Destacados</option><option value="low">Precio menor</option><option value="high">Precio mayor</option></select></div>
+<section id="products" class="grid"></section>
+</main>
+<dialog id="cartDialog"><div class="cartTop"><h2>Carrito</h2><button onclick="cartDialog.close()">✕</button></div><div id="cart"></div><hr><div class="cartBottom"><b>Total: <span id="total">$0.00</span></b><button onclick="placeOrder()">Crear pedido</button></div></dialog>
+<script src="app.js"></script></body></html>
