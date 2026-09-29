@@ -1,2 +1,0 @@
-# systeinfo
-Páginas web
